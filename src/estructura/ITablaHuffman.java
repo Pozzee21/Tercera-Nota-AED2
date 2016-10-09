@@ -2,7 +2,7 @@ package estructura;
 
 public interface ITablaHuffman {
 
-	public Lista getTabla();
+	public String buscar(byte x);
 	public int getTamaño();
 	
 }

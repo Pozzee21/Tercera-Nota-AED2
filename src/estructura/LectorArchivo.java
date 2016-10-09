@@ -38,5 +38,8 @@ public class LectorArchivo {
 	public Lista getLista(){
 		return lista;
 	}
+	public RandomAccessFile getRaf() {
+		return raf;
+	}
 
 }
