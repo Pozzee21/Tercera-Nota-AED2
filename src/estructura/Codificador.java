@@ -1,18 +1,21 @@
 package estructura;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.RandomAccessFile;
 
 public class Codificador {
 
 	private int contador=0;
 	private byte byteNuevo=0;
-	RandomAccessFile codificado,original;
+	private String ruta;
+	private RandomAccessFile codificado,original;
 
 	public Codificador(RandomAccessFile original,String ruta){
 
 		this.original=original;
-		crearArchivo(ruta);
+		this.ruta= ruta;
+		crearArchivo();
 
 	}
 
@@ -31,9 +34,30 @@ public class Codificador {
 		}
 	}
 
-	public void crearArchivo(String ruta){
+	public void escribirCabecera(){
+		try {
+			//c21.
+			codificado.write('c');
+			codificado.write('2');
+			codificado.write('1');
+			//extensión archivo original.
+			String extension=ruta.substring(ruta.length()-3);
+			System.out.println(extension);
+			for (int i =0;i<extension.length();i++){
+				codificado.write(extension.charAt(i));
+			}
+			//tamaño del archivo original.
+			codificado.write((int)original.length());
+			
+		} catch (IOException e) {
+			System.err.println(e);
+		}
+		
+	}
+	public void crearArchivo(){
 		try{
-			codificado= new RandomAccessFile(new File(ruta), "rw");
+			String rutaNueva=ruta.substring(0, ruta.length()-4)+".c21";
+			codificado= new RandomAccessFile(new File(rutaNueva), "rw");
 
 		}catch(Exception e){
 			System.err.println(e);
