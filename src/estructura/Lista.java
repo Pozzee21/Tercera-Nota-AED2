@@ -58,9 +58,6 @@ public class Lista implements ILista{
 				if(nodo.getOcurrencia() < aux.getInfo().getOcurrencia()){
 					auxAnterior.setRef(new Nodo(nodo, aux));
 					break;
-				}else if(nodo.getOcurrencia() == aux.getInfo().getOcurrencia()){
-					aux.setRef(new Nodo(nodo, aux.getRef()));
-					break;
 				}else if(aux.getRef() == null){
 					aux.setRef(new Nodo(nodo, null));
 					break;
