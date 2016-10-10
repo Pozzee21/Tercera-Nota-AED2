@@ -47,7 +47,7 @@ public class Codificador {
 				codificado.write(extension.charAt(i));
 			}
 			//tamaño del archivo original.
-			codificado.write((int)original.length());
+			guardarDWord(100992003);
 			
 		} catch (IOException e) {
 			System.err.println(e);
@@ -101,7 +101,6 @@ public class Codificador {
 		contador++;
 		if (contador==8){
 			try{
-
 				codificado.write(byteNuevo);
 				contador=0;
 				byteNuevo=0;
@@ -111,7 +110,18 @@ public class Codificador {
 
 		}
 
-
+	}
+	
+	public void guardarDWord(long x){
+		for(int i = 0; i < 4; i++){
+			long y = x & 0xFF;
+			try {
+				codificado.write((int)y);
+				x = x >> 8;
+			} catch (Exception e) {
+				System.err.println(e);
+			}
+		}
 	}
 
 

@@ -8,7 +8,8 @@ public class mainPedorro {
 	public static void main(String[] args) {
 
 		try {
-			Codificador codificador= new Codificador(new RandomAccessFile("C:/Users/Daiko/Desktop/gaston puto.txt", "rw"),"C:/Users/Daiko/Desktop/gaston puto.txt" );
+			String ruta = "C:/Users/Gaston/Desktop/gaston puto.txt";
+			Codificador codificador= new Codificador(new RandomAccessFile(ruta, "rw"), ruta);
 			codificador.escribirCabecera();
 			} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
