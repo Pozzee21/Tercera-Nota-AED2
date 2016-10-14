@@ -9,7 +9,6 @@ public class TablaHuffman implements ITablaHuffman{
 
 	//	Constructor
 	public TablaHuffman(ArbolHuffman arb) {
-		
 		recorrerArbolRecursivo(arb.getRaiz(),"");
 	}
 	
@@ -23,6 +22,7 @@ public class TablaHuffman implements ITablaHuffman{
 				
 		}
 		if(p.der!=null){
+		
 			recorrerArbolRecursivo(p.der,ruta+"1");
 		}
 		
@@ -38,13 +38,24 @@ public class TablaHuffman implements ITablaHuffman{
 	}
 
 	public String buscar(byte x) {
-		if(){
-			
+		NodoTablaHuffman aux = pri;
+		while(aux!= null){
+			if(aux.getDato() == x){
+				return aux.getByteAcotado();
+			}
+			aux = aux.getSiguiente();
 		}
+		
 		return null;
 	}
 	public NodoTablaHuffman getPrimero(){
-		return
+		NodoTablaHuffman aux = pri;
+		if(pri == null){
+			return null;
+		}else{
+			pri = pri.getSiguiente();
+		}
+		return aux;
 	}
 
 }
