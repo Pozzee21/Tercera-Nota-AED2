@@ -9,7 +9,7 @@ public class Codificador {
 	private int contador=0;
 	private byte byteNuevo=0;
 	private String ruta;
-	private RandomAccessFile codificado,original;
+	private RandomAccessFile comprimido,original;
 
 	public Codificador(RandomAccessFile original,String ruta){
 
@@ -22,48 +22,94 @@ public class Codificador {
 	public void codificar( ITablaHuffman th){
 
 		try{
+			//posición comienzo de los datos comprimidos
+			
+			comprimido.seek(18);
+			comprimido.write(th.getTamaño());
+			for (int i=0;i<th.getTamaño();i++){
+				NodoTablaHuffman nodoHuffman= th.getPrimero();
+				comprimido.write(nodoHuffman.getDato());
+				guardarDWord(nodoHuffman.getOcurrencia());
+			}
+			long posicionCompri = comprimido.getFilePointer();
+			comprimido.seek(10);
+			guardarDWord(posicionCompri);
+			
+			//Escritura de bytes comprimidos.
+			comprimido.seek(posicionCompri);
+			
+			
 			byte aux;
 			while((aux=original.readByte())!=-1){
-
+				
 				String byteComprimido=th.buscar(aux);
 				escribirBytes(byteComprimido);
+				
+				
 			}
-
+			
+			
+			
+			//Tamaño de este archivo
+			comprimido.seek(14);
+			guardarDWord(comprimido.length());
 		}catch(Exception e){
 			System.out.println(e);
 		}
 	}
 
+	public void crearArchivo(){
+		try{
+			String rutaNueva=ruta.substring(0, ruta.length()-4)+".c21";
+			comprimido= new RandomAccessFile(new File(rutaNueva), "rw");
+			
+		}catch(Exception e){
+			System.err.println(e);
+		}
+	}
 	public void escribirCabecera(){
 		try {
 			//c21.
-			codificado.write('c');
-			codificado.write('2');
-			codificado.write('1');
+			comprimido.write('c');
+			comprimido.write('2');
+			comprimido.write('1');
 			//extensión archivo original.
 			String extension=ruta.substring(ruta.length()-3);
-			System.out.println(extension);
 			for (int i =0;i<extension.length();i++){
-				codificado.write(extension.charAt(i));
+				comprimido.write(extension.charAt(i));
 			}
 			//tamaño del archivo original.
-			guardarDWord(100992003);
+			guardarDWord(original.length());
 			
 		} catch (IOException e) {
 			System.err.println(e);
 		}
 		
 	}
-	public void crearArchivo(){
-		try{
-			String rutaNueva=ruta.substring(0, ruta.length()-4)+".c21";
-			codificado= new RandomAccessFile(new File(rutaNueva), "rw");
-
-		}catch(Exception e){
-			System.err.println(e);
+	public void guardarDWord(long x){
+		for(int i = 0; i < 4; i++){
+			long y = x & 0xFF;
+			try {
+				comprimido.write((int)y);
+				x = x >> 8;
+			} catch (Exception e) {
+				System.err.println(e);
+			}
 		}
 	}
 
+
+	public long getTamañoComprimido(){
+		long tamaño=0;
+		try{
+			tamaño= comprimido.length();
+			
+		}catch(IOException ex){
+			System.err.println(ex);
+		}
+		return tamaño;
+	}
+	
 	public void escribirBytes(String byteComprimido){
 
 		for (int i=0; i<byteComprimido.length();i++){
@@ -101,7 +147,7 @@ public class Codificador {
 		contador++;
 		if (contador==8){
 			try{
-				codificado.write(byteNuevo);
+				comprimido.write(byteNuevo);
 				contador=0;
 				byteNuevo=0;
 			}catch(Exception e){
@@ -111,18 +157,5 @@ public class Codificador {
 		}
 
 	}
-	
-	public void guardarDWord(long x){
-		for(int i = 0; i < 4; i++){
-			long y = x & 0xFF;
-			try {
-				codificado.write((int)y);
-				x = x >> 8;
-			} catch (Exception e) {
-				System.err.println(e);
-			}
-		}
-	}
-
 
 }
