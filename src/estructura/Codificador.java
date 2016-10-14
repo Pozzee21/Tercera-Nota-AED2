@@ -10,34 +10,22 @@ public class Codificador {
 	private byte byteNuevo=0;
 	private String ruta;
 	private RandomAccessFile comprimido,original;
+	ITablaHuffman th=null;
 
-	public Codificador(RandomAccessFile original,String ruta){
+	public Codificador(RandomAccessFile original,String ruta,ITablaHuffman th){
 
 		this.original=original;
 		this.ruta= ruta;
 		crearArchivo();
-
+		this.th=th;
 	}
 
-	public void codificar( ITablaHuffman th){
+	public void codificar( ){
+		
 
 		try{
-			//posición comienzo de los datos comprimidos
-			
-			comprimido.seek(18);
-			comprimido.write(th.getTamaño());
-			for (int i=0;i<th.getTamaño();i++){
-				NodoTablaHuffman nodoHuffman= th.getPrimero();
-				comprimido.write(nodoHuffman.getDato());
-				guardarDWord(nodoHuffman.getOcurrencia());
-			}
-			long posicionCompri = comprimido.getFilePointer();
-			comprimido.seek(10);
-			guardarDWord(posicionCompri);
-			
+			escribirCabecera();
 			//Escritura de bytes comprimidos.
-			comprimido.seek(posicionCompri);
-			
 			
 			byte aux;
 			while((aux=original.readByte())!=-1){
@@ -80,6 +68,19 @@ public class Codificador {
 			}
 			//tamaño del archivo original.
 			guardarDWord(original.length());
+			//posición comienzo de los datos comprimidos
+
+			comprimido.seek(18);
+			comprimido.write(th.getTamaño());
+			for (int i=0;i<th.getTamaño();i++){
+				NodoTablaHuffman nodoHuffman= th.getPrimero();
+				comprimido.write(nodoHuffman.getDato());
+				guardarDWord(nodoHuffman.getOcurrencia());
+			}
+			long posicionCompri = comprimido.getFilePointer();
+			comprimido.seek(10);
+			guardarDWord(posicionCompri);
+			comprimido.seek(posicionCompri);
 			
 		} catch (IOException e) {
 			System.err.println(e);
