@@ -9,7 +9,7 @@ public class mainPedorro {
 
 		try {
 			String ruta = "C:/Users/Gaston/Desktop/gaston puto.txt";
-			Codificador codificador= new Codificador(new RandomAccessFile(ruta, "rw"), ruta);
+			Codificador codificador= new Codificador(new RandomAccessFile(ruta, "rw"), ruta);//tercer par{ametro es una tabla huffman
 			codificador.escribirCabecera();
 			} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
