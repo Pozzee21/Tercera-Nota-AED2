@@ -31,12 +31,12 @@ public class Codificador {
 			while((aux=(byte) original.read())!=-1){
 				
 				String byteComprimido=th.buscar(aux);
-				escribirBytes(byteComprimido);
 				
+				escribirBytes(byteComprimido);
 				
 			}
 			
-			
+			comprimido.write(byteNuevo);
 			
 			//Tamaño de este archivo
 			comprimido.seek(14);
@@ -113,51 +113,54 @@ public class Codificador {
 	}
 	
 	public void escribirBytes(String byteComprimido){
+//		System.out.println("EMpieza");
+		System.out.println(byteComprimido);
 
 		for (int i=0; i<byteComprimido.length();i++){
 
-			if(byteComprimido.charAt(i)==1){
+			if(byteComprimido.charAt(i)=='1'){
 
 				switch(contador){
 				case 0:
-					byteNuevo=(byte) (byteNuevo & 0x80);
+					byteNuevo=(byte) (byteNuevo | 0x80);
 					break;
 				case 1:
-					byteNuevo=(byte) (byteNuevo & 0x40);
+					byteNuevo=(byte) (byteNuevo | 0x40);
 					break;
 				case 2:
-					byteNuevo=(byte) (byteNuevo & 0x20);
+					byteNuevo=(byte) (byteNuevo | 0x20);
 					break;
 				case 3:
-					byteNuevo=(byte) (byteNuevo & 0x10);
+					byteNuevo=(byte) (byteNuevo | 0x10);
 					break;
 				case 4:
-					byteNuevo=(byte) (byteNuevo & 0x8);
+					byteNuevo=(byte) (byteNuevo | 0x8);
 					break;
 				case 5:
-					byteNuevo=(byte) (byteNuevo & 0x4);
+					byteNuevo=(byte) (byteNuevo | 0x4);
 					break;
 				case 6:
-					byteNuevo=(byte) (byteNuevo & 0x2);
+					byteNuevo=(byte) (byteNuevo | 0x2);
 					break;
 				case 7:
-					byteNuevo=(byte) (byteNuevo & 0x1);
+					byteNuevo=(byte) (byteNuevo | 0x1);
 					break;
 				}
 			}
-		}
-		contador++;
-		if (contador==8){
-			try{
-				comprimido.write(byteNuevo);
-				contador=0;
-				byteNuevo=0;
-			}catch(Exception e){
-				System.err.println(e);
+			contador++;
+			if (contador==8){
+				try{
+					comprimido.write(byteNuevo);
+					contador=0;
+					byteNuevo=0;
+				}catch(Exception e){
+					System.err.println(e);
+				}
+				
 			}
-
 		}
-
+		
+//		System.out.println("Termina");
 	}
 
 }
