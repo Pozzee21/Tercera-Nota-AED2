@@ -28,7 +28,7 @@ public class Codificador {
 			//Escritura de bytes comprimidos.
 			
 			byte aux;
-			while((aux=original.readByte())!=-1){
+			while((aux=(byte) original.read())!=-1){
 				
 				String byteComprimido=th.buscar(aux);
 				escribirBytes(byteComprimido);
@@ -41,8 +41,9 @@ public class Codificador {
 			//Tamaño de este archivo
 			comprimido.seek(14);
 			guardarDWord(comprimido.length());
+			original.close();
 		}catch(Exception e){
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 
@@ -73,7 +74,7 @@ public class Codificador {
 			comprimido.seek(18);
 			comprimido.write(th.getTamaño());
 			for (int i=0;i<th.getTamaño();i++){
-				NodoTablaHuffman nodoHuffman= th.getPrimero();
+				NodoTablaHuffman nodoHuffman= th.get(i);
 				comprimido.write(nodoHuffman.getDato());
 				guardarDWord(nodoHuffman.getOcurrencia());
 			}
